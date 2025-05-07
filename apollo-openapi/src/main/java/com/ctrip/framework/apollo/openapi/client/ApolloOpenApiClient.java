@@ -22,6 +22,8 @@ import com.ctrip.framework.apollo.openapi.client.service.ClusterOpenApiService;
 import com.ctrip.framework.apollo.openapi.client.service.ItemOpenApiService;
 import com.ctrip.framework.apollo.openapi.client.service.NamespaceOpenApiService;
 import com.ctrip.framework.apollo.openapi.client.service.ReleaseOpenApiService;
+import com.ctrip.framework.apollo.openapi.client.service.InstanceOpenApiService;
+import com.ctrip.framework.apollo.openapi.client.service.OrganizationOpenApiService;
 import com.ctrip.framework.apollo.openapi.dto.*;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -45,10 +47,12 @@ public class ApolloOpenApiClient {
   private final String portalUrl;
   private final String token;
   private final AppOpenApiService appService;
+  private final OrganizationOpenApiService organizationOpenService;
   private final ItemOpenApiService itemService;
   private final ReleaseOpenApiService releaseService;
   private final NamespaceOpenApiService namespaceService;
   private final ClusterOpenApiService clusterService;
+  private final InstanceOpenApiService instanceService;
   private static final Gson GSON = new GsonBuilder().setDateFormat(ApolloOpenApiConstants.JSON_DATE_FORMAT).create();
 
   private ApolloOpenApiClient(String portalUrl, String token, RequestConfig requestConfig) {
@@ -63,6 +67,8 @@ public class ApolloOpenApiClient {
     namespaceService = new NamespaceOpenApiService(client, baseUrl, GSON);
     itemService = new ItemOpenApiService(client, baseUrl, GSON);
     releaseService = new ReleaseOpenApiService(client, baseUrl, GSON);
+    organizationOpenService = new OrganizationOpenApiService(client, baseUrl, GSON);
+    instanceService = new InstanceOpenApiService(client, baseUrl, GSON);
   }
 
   public void createApp(OpenCreateAppDTO req) {
@@ -84,6 +90,13 @@ public class ApolloOpenApiClient {
   }
 
   /**
+   * Get all organizations
+   */
+  public List<OpenOrganizationDto> getOrganizations() {
+    return organizationOpenService.getOrganizations();
+  }
+
+  /**
    * Get applications which can be operated by current open api client.
    *
    * @return app's information
@@ -99,11 +112,16 @@ public class ApolloOpenApiClient {
     return appService.getAppsInfo(appIds);
   }
 
-  /**
-   * Get the namespaces
-   */
   public List<OpenNamespaceDTO> getNamespaces(String appId, String env, String clusterName) {
     return namespaceService.getNamespaces(appId, env, clusterName);
+  }
+
+  /**
+   * Get the namespaces
+   * @since 2.4.0
+   */
+  public List<OpenNamespaceDTO> getNamespaces(String appId, String env, String clusterName, boolean fillItemDetail) {
+    return namespaceService.getNamespaces(appId, env, clusterName, fillItemDetail);
   }
 
   /**
@@ -124,11 +142,16 @@ public class ApolloOpenApiClient {
     return clusterService.createCluster(env, openClusterDTO);
   }
 
-  /**
-   * Get the namespace
-   */
   public OpenNamespaceDTO getNamespace(String appId, String env, String clusterName, String namespaceName) {
     return namespaceService.getNamespace(appId, env, clusterName, namespaceName);
+  }
+
+  /**
+   * Get the namespace
+   * @since 2.4.0
+   */
+  public OpenNamespaceDTO getNamespace(String appId, String env, String clusterName, String namespaceName, boolean fillItemDetail) {
+    return namespaceService.getNamespace(appId, env, clusterName, namespaceName, fillItemDetail);
   }
 
   /**
@@ -221,6 +244,14 @@ public class ApolloOpenApiClient {
    */
   public void rollbackRelease(String env, long releaseId, String operator) {
     releaseService.rollbackRelease(env, releaseId, operator);
+  }
+
+  /**
+   * Get instance count by namespace
+   * @since 2.5.0
+   */
+  public int getInstanceCountByNamespace(String appId, String env, String clusterName, String namespaceName) {
+    return instanceService.getInstanceCountByNamespace(appId, env, clusterName, namespaceName);
   }
 
 

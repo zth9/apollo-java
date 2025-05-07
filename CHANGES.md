@@ -2,11 +2,12 @@ Changes by Version
 ==================
 Release Notes.
 
-Apollo Java 2.3.0
+Apollo Java 2.5.0
 
 ------------------
-* [add an initialize method to avoid DefaultProviderManager's logic being triggered when using custom ProviderManager.](https://github.com/apolloconfig/apollo-java/pull/50)
-* [Implement parsing time based on pattern for @ApolloJsonValue](https://github.com/apolloconfig/apollo-java/pull/53)
+
+* [Feature Provide a new open APl to return the organization list](https://github.com/apolloconfig/apollo-java/pull/102)
+* [Feature Added a new feature to get instance count by namespace.](https://github.com/apolloconfig/apollo-java/pull/103)
 
 ------------------
-All issues and pull requests are [here](https://github.com/apolloconfig/apollo-java/milestone/3?closed=1)
+All issues and pull requests are [here](https://github.com/apolloconfig/apollo-java/milestone/5?closed=1)
